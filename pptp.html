@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <style>
+    .hide {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>「ポ」「プ」「テ」「ピピック」をランダムに出力して「ポプテピピック」が完成したら竹●房を破壊するVue.js</h1>
+    <button v-on:click="start">クリックしてね！</button>
+    <br>
+    <pop-team-epic v-for="pop in pops" :text="pop.token"></pop-team-epic>
+    <destroyed-take :destroyed="destroyed"></destroyed-take>
+  </div>
+
+  <script src="vue/vue.js"></script>
+
+  <script>
+
+    const TOKENS = [ 'ポ', 'プ', 'テ', 'ピピック' ]
+
+    Vue.component('takeDestruction', {
+      template: '\
+        <div :class="{ hide: !destroyed }">\
+          　　　　　　　　　　　　　　　　　　　　　　　　　-------　､　ｒへ------､ <br>\
+          　　　　　　　　　　　　　　　　　　 ＿__､+\'\'"~　八 　　　　　~\'\'＜ つ　　　＼ <br>\
+          　　　　　　　　　　　　　　 _､+\'\'"~　 ./ ,:　　　　＾ 　 丶　　　　　ヽく＿＿　∧ <br>\
+          　　　　　　 , -r-　　　　 / 　 　 　 / / -､　　　　\'´￣!＼‘,　‘:,　 |　　　 ＼/ <br>\
+          　　　　　／ .∧　　 ＼..ﾞ|/＿,,.｡*\'/ /|,\/＼＿_／^ヽ /,,_　`! 　 \',　| <br>\
+          　　　 ／　　　∧　　　 ＼　〈〉.　,　.|　ｙ\'\'"ヽ______ 7´⌒ヽ _|　　ト;′ <br>\
+          　　 〈　　　　　 ∧ （竹） .∨...　｜｜ ,r　ヽ 三三/　　‘:, Y!　 .|,′ <br>\
+          　　　∨ 　 　 　 ∧　　　　∨...　|　.|八 °,!三三{.　° ﾉ 八　/---､ <br>\
+          .　　　 ∨ 　 　 　 ∧　　　　∨....∨（.＾ 　　 ､_,､_, \`　　　,.ｨ^!./＿　　\', <br>\
+          　　　　 ∨　　 ／三ﾐメ、　　∨　冫≧=‐------‐ｧ=≦/ .|/　　 } 　 ! <br>\
+          .　　　 　 ∨三三三三圦__.＼＼/　＼|ｲ `\'\'＜:＼/:::::／　　|　　（＿__） <br>\
+          　　　 〈〉　　 ノ　ゞ三ｼ.　＼　＼;　　 { /　　　 ｀¨ﾍ⌒こフ　.∨ 〔､､､_） <br>\
+          　　　　　　　）　　　 　 　 　 ＼八　　`^i､_ __　　　 ＼＼　　 .∨ ｀¨´ <br>\
+          　　　　 ＜ﾍ＿/三＼＿／｜＼､.＼　/::/　 ）　　　　 `\'´　＿ ,∨､ <br>\
+          　　　　|＼三三三三:／　　|.　　＼/^ゞク≦---‐=≦::::::「:::::::::|::::/ <br>\
+          　　　　　　　　 　 　 　 　 　 　 　 /:::::::/:::::::/:::::::::;′:::::::::|::::::::::|:人<br>\
+          happy end!!\n\
+        </div>',
+      props: ['destroyed']
+    })
+
+    Vue.component('popTeamEpic', {
+      template: '<span>{{ text }}</span>',
+      props: ['text']
+    })
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        pops: [],
+        destroyed: false
+      },
+      methods: {
+        pushToken: function() {
+          this.pops.push({ token: TOKENS[ Math.floor(Math.random() * TOKENS.length) ] });
+          let lastFourTokens = this.pops.slice(-4).reduce(function(previous, current, index, array) {
+            return previous + current.token;
+          }, '');
+          if (lastFourTokens == 'ポプテピピック') {
+            this.destroyed = true;
+            clearInterval(this.interval);
+          }
+        },
+        start: function() {
+          this.pops = [];
+          this.destroyed = false;
+          this.interval = setInterval(this.pushToken, 20);
+        }
+      }
+    })
+
+  </script>
+
+</body>
+</html>
